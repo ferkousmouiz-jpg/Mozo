@@ -1,91 +1,42 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+content="width=device-width,initial-scale=1.0">
 
-<title>Mini RPG</title>
+<title>Online Chess</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
 
 </head>
 
 <body>
 
-<div class="game">
+<div class="container">
 
-<h1>⚔️ Mini RPG</h1>
+<h1>♟ Online Chess</h1>
 
-<div class="hud">
+<div id="status">
 
-<div>
-
-<h3>🧍 اللاعب</h3>
-
-<div class="bar">
-
-<div id="playerHp"></div>
+Waiting...
 
 </div>
 
-<p id="playerText">
-100 / 100
-</p>
-
-</div>
-
-<div>
-
-<h3>👾 الوحش</h3>
-
-<div class="bar">
-
-<div id="enemyHp"></div>
-
-</div>
-
-<p id="enemyText">
-100 / 100
-</p>
+<div id="board">
 
 </div>
 
 </div>
 
-<canvas
-id="gameCanvas"
-width="640"
-height="400">
-</canvas>
+<script src="/socket.io/socket.io.js"></script>
 
-<div class="buttons">
-
-<button id="attackBtn">
-
-⚔️ هجوم
-
-</button>
-
-<button id="restartBtn">
-
-🔄 إعادة
-
-</button>
-
-</div>
-
-<p id="message">
-
-ابدأ اللعبة
-
-</p>
-
-</div>
-
-<script src="script.js"></script>
+<script src="app.js"></script>
 
 </body>
+
 </html>
