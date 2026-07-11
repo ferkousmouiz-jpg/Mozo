@@ -1,61 +1,91 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لعبة تخمين الرقم</title>
 
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Mini RPG</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <div class="container">
+<div class="game">
 
-        <h1>🎯 لعبة تخمين الرقم</h1>
+<h1>⚔️ Mini RPG</h1>
 
-        <p class="description">
-            حاول تخمين الرقم بين <strong>1</strong> و <strong>100</strong>
-        </p>
+<div class="hud">
 
-        <div class="stats">
+<div>
 
-            <div class="card">
-                <span>المحاولات</span>
-                <h2 id="attempts">10</h2>
-            </div>
+<h3>🧍 اللاعب</h3>
 
-            <div class="card">
-                <span>أفضل نتيجة</span>
-                <h2 id="bestScore">-</h2>
-            </div>
+<div class="bar">
 
-        </div>
+<div id="playerHp"></div>
 
-        <input
-            type="number"
-            id="guessInput"
-            min="1"
-            max="100"
-            placeholder="اكتب الرقم">
+</div>
 
-        <button id="guessBtn">
-            تخمين
-        </button>
+<p id="playerText">
+100 / 100
+</p>
 
-        <p id="message">
-            ابدأ بالتخمين...
-        </p>
+</div>
 
-        <button id="restartBtn">
-            🔄 لعبة جديدة
-        </button>
+<div>
 
-    </div>
+<h3>👾 الوحش</h3>
 
-    <script src="script.js"></script>
+<div class="bar">
+
+<div id="enemyHp"></div>
+
+</div>
+
+<p id="enemyText">
+100 / 100
+</p>
+
+</div>
+
+</div>
+
+<canvas
+id="gameCanvas"
+width="640"
+height="400">
+</canvas>
+
+<div class="buttons">
+
+<button id="attackBtn">
+
+⚔️ هجوم
+
+</button>
+
+<button id="restartBtn">
+
+🔄 إعادة
+
+</button>
+
+</div>
+
+<p id="message">
+
+ابدأ اللعبة
+
+</p>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
-
 </html>
