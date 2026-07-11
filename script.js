@@ -1,117 +1,140 @@
-let randomNumber = Math.floor(Math.random() * 100) + 1;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-let attempts = 10;
-
-const input = document.getElementById("guessInput");
-const guessBtn = document.getElementById("guessBtn");
+const attackBtn = document.getElementById("attackBtn");
 const restartBtn = document.getElementById("restartBtn");
+
+const playerHpBar = document.getElementById("playerHp");
+const enemyHpBar = document.getElementById("enemyHp");
+
+const playerText = document.getElementById("playerText");
+const enemyText = document.getElementById("enemyText");
 
 const message = document.getElementById("message");
 
-const attemptsText = document.getElementById("attempts");
+const player = {
+    x: 60,
+    y: 170,
+    size: 35,
+    hp: 100
+};
 
-const bestScoreText = document.getElementById("bestScore");
+const enemy = {
+    x: 500,
+    y: 170,
+    size: 35,
+    hp: 100,
+    alive: true
+};
 
-let bestScore = localStorage.getItem("bestScore");
+const keys = {};
 
-if (bestScore === null) {
-    bestScoreText.textContent = "-";
-} else {
-    bestScoreText.textContent = bestScore;
+document.addEventListener("keydown", e => {
+    keys[e.key] = true;
+});
+
+document.addEventListener("keyup", e => {
+    keys[e.key] = false;
+});
+
+function update() {
+
+    if (keys["ArrowUp"]) player.y -= 3;
+    if (keys["ArrowDown"]) player.y += 3;
+    if (keys["ArrowLeft"]) player.x -= 3;
+    if (keys["ArrowRight"]) player.x += 3;
+
+    player.x = Math.max(0, Math.min(canvas.width-player.size, player.x));
+    player.y = Math.max(0, Math.min(canvas.height-player.size, player.y));
+
 }
 
-guessBtn.addEventListener("click", checkGuess);
+function draw() {
 
-restartBtn.addEventListener("click", newGame);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-function checkGuess() {
+    ctx.fillStyle="#5fa84d";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    const guess = Number(input.value);
+    ctx.fillStyle="#2563eb";
+    ctx.fillRect(player.x,player.y,player.size,player.size);
 
-    if (guess < 1 || guess > 100 || isNaN(guess)) {
+    if(enemy.alive){
 
-        message.textContent = "⚠️ أدخل رقماً بين 1 و100";
-
-        message.className = "";
-
-        return;
+        ctx.fillStyle="#ef4444";
+        ctx.fillRect(enemy.x,enemy.y,enemy.size,enemy.size);
 
     }
 
-    attempts--;
+}
 
-    attemptsText.textContent = attempts;
+function loop(){
 
-    if (guess === randomNumber) {
+    update();
 
-        message.textContent = `🎉 أحسنت! الرقم هو ${randomNumber}`;
+    draw();
 
-        message.className = "correct";
+    requestAnimationFrame(loop);
 
-        guessBtn.disabled = true;
+}
 
-        const score = 10 - attempts;
+loop();
 
-        if (bestScore === null || score < bestScore) {
+attackBtn.addEventListener("click",()=>{
 
-            bestScore = score;
+    if(!enemy.alive) return;
 
-            localStorage.setItem("bestScore", score);
+    const dx=player.x-enemy.x;
 
-            bestScoreText.textContent = score;
+    const dy=player.y-enemy.y;
+
+    const distance=Math.sqrt(dx*dx+dy*dy);
+
+    if(distance<80){
+
+        const damage=Math.floor(Math.random()*15)+10;
+
+        enemy.hp-=damage;
+
+        if(enemy.hp<0) enemy.hp=0;
+
+        enemyHpBar.style.width=enemy.hp+"%";
+
+        enemyText.textContent=`${enemy.hp} / 100`;
+
+        message.textContent=`⚔️ ألحقت ${damage} ضرراً`;
+
+        if(enemy.hp===0){
+
+            enemy.alive=false;
+
+            message.textContent="🎉 لقد هزمت الوحش";
 
         }
 
-        return;
+    }else{
+
+        message.textContent="اقترب من الوحش أولاً";
 
     }
 
-    if (guess < randomNumber) {
+});
 
-        message.textContent = "📈 الرقم أكبر";
+restartBtn.addEventListener("click",()=>{
 
-        message.className = "low";
+    player.x=60;
+    player.y=170;
+    player.hp=100;
 
-    } else {
+    enemy.hp=100;
+    enemy.alive=true;
 
-        message.textContent = "📉 الرقم أصغر";
+    playerHpBar.style.width="100%";
+    enemyHpBar.style.width="100%";
 
-        message.className = "high";
+    playerText.textContent="100 / 100";
+    enemyText.textContent="100 / 100";
 
-    }
+    message.textContent="ابدأ اللعبة";
 
-    if (attempts === 0) {
-
-        message.textContent = `💥 خسرت! الرقم الصحيح هو ${randomNumber}`;
-
-        message.className = "high";
-
-        guessBtn.disabled = true;
-
-    }
-
-    input.value = "";
-
-    input.focus();
-
-}
-
-function newGame() {
-
-    randomNumber = Math.floor(Math.random() * 100) + 1;
-
-    attempts = 10;
-
-    attemptsText.textContent = attempts;
-
-    message.textContent = "ابدأ بالتخمين...";
-
-    message.className = "";
-
-    input.value = "";
-
-    guessBtn.disabled = false;
-
-    input.focus();
-
-}
+});
