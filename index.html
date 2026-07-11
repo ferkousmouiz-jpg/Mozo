@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XO Game</title>
+    <title>لعبة تخمين الرقم</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,54 +13,44 @@
 
     <div class="container">
 
-        <h1>🎮 Tic Tac Toe</h1>
+        <h1>🎯 لعبة تخمين الرقم</h1>
 
-        <div class="scoreboard">
-            <div class="score x-score">
-                <span>X</span>
-                <p id="scoreX">0</p>
+        <p class="description">
+            حاول تخمين الرقم بين <strong>1</strong> و <strong>100</strong>
+        </p>
+
+        <div class="stats">
+
+            <div class="card">
+                <span>المحاولات</span>
+                <h2 id="attempts">10</h2>
             </div>
 
-            <div class="score draw-score">
-                <span>🤝</span>
-                <p id="scoreDraw">0</p>
+            <div class="card">
+                <span>أفضل نتيجة</span>
+                <h2 id="bestScore">-</h2>
             </div>
 
-            <div class="score o-score">
-                <span>O</span>
-                <p id="scoreO">0</p>
-            </div>
         </div>
 
-        <div id="status" class="status">
-            دور اللاعب X
-        </div>
+        <input
+            type="number"
+            id="guessInput"
+            min="1"
+            max="100"
+            placeholder="اكتب الرقم">
 
-        <div class="board">
+        <button id="guessBtn">
+            تخمين
+        </button>
 
-            <div class="cell" data-index="0"></div>
-            <div class="cell" data-index="1"></div>
-            <div class="cell" data-index="2"></div>
+        <p id="message">
+            ابدأ بالتخمين...
+        </p>
 
-            <div class="cell" data-index="3"></div>
-            <div class="cell" data-index="4"></div>
-            <div class="cell" data-index="5"></div>
-
-            <div class="cell" data-index="6"></div>
-            <div class="cell" data-index="7"></div>
-            <div class="cell" data-index="8"></div>
-
-        </div>
-
-        <div class="buttons">
-            <button id="restart">
-                🔄 إعادة الجولة
-            </button>
-
-            <button id="resetScore">
-                🗑️ تصفير النتائج
-            </button>
-        </div>
+        <button id="restartBtn">
+            🔄 لعبة جديدة
+        </button>
 
     </div>
 
