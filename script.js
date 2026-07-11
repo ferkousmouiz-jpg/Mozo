@@ -1,174 +1,117 @@
-const cells = document.querySelectorAll(".cell");
-const statusText = document.getElementById("status");
+let randomNumber = Math.floor(Math.random() * 100) + 1;
 
-const restartBtn = document.getElementById("restart");
-const resetScoreBtn = document.getElementById("resetScore");
+let attempts = 10;
 
-const scoreX = document.getElementById("scoreX");
-const scoreO = document.getElementById("scoreO");
-const scoreDraw = document.getElementById("scoreDraw");
+const input = document.getElementById("guessInput");
+const guessBtn = document.getElementById("guessBtn");
+const restartBtn = document.getElementById("restartBtn");
 
-let currentPlayer = "X";
-let board = ["","","","","","","","",""];
-let gameActive = true;
+const message = document.getElementById("message");
 
-let scores = JSON.parse(localStorage.getItem("xoScores")) || {
-    X:0,
-    O:0,
-    draw:0
-};
+const attemptsText = document.getElementById("attempts");
 
-updateScoreboard();
+const bestScoreText = document.getElementById("bestScore");
 
-const winConditions = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
-];
+let bestScore = localStorage.getItem("bestScore");
 
-cells.forEach(cell=>{
-    cell.addEventListener("click",handleClick);
-});
-
-restartBtn.addEventListener("click",restartGame);
-resetScoreBtn.addEventListener("click",resetScores);
-
-function handleClick(){
-
-    const index = this.dataset.index;
-
-    if(board[index]!=="" || !gameActive) return;
-
-    board[index]=currentPlayer;
-
-    this.textContent=currentPlayer;
-
-    this.classList.add("pop");
-
-    if(currentPlayer==="X"){
-        this.classList.add("x");
-    }else{
-        this.classList.add("o");
-    }
-
-    checkWinner();
+if (bestScore === null) {
+    bestScoreText.textContent = "-";
+} else {
+    bestScoreText.textContent = bestScore;
 }
 
-function checkWinner(){
+guessBtn.addEventListener("click", checkGuess);
 
-    let winner=null;
+restartBtn.addEventListener("click", newGame);
 
-    for(let condition of winConditions){
+function checkGuess() {
 
-        const [a,b,c]=condition;
+    const guess = Number(input.value);
 
-        if(
-            board[a] &&
-            board[a]===board[b] &&
-            board[a]===board[c]
-        ){
+    if (guess < 1 || guess > 100 || isNaN(guess)) {
 
-            winner=condition;
-            break;
+        message.textContent = "⚠️ أدخل رقماً بين 1 و100";
+
+        message.className = "";
+
+        return;
+
+    }
+
+    attempts--;
+
+    attemptsText.textContent = attempts;
+
+    if (guess === randomNumber) {
+
+        message.textContent = `🎉 أحسنت! الرقم هو ${randomNumber}`;
+
+        message.className = "correct";
+
+        guessBtn.disabled = true;
+
+        const score = 10 - attempts;
+
+        if (bestScore === null || score < bestScore) {
+
+            bestScore = score;
+
+            localStorage.setItem("bestScore", score);
+
+            bestScoreText.textContent = score;
+
         }
 
-    }
-
-    if(winner){
-
-        winner.forEach(index=>{
-            cells[index].classList.add("winner");
-        });
-
-        statusText.textContent=`🎉 اللاعب ${currentPlayer} فاز`;
-
-        scores[currentPlayer]++;
-
-        saveScores();
-
-        gameActive=false;
-
         return;
+
     }
 
-    if(!board.includes("")){
+    if (guess < randomNumber) {
 
-        statusText.textContent="🤝 تعادل";
+        message.textContent = "📈 الرقم أكبر";
 
-        scores.draw++;
+        message.className = "low";
 
-        saveScores();
+    } else {
 
-        gameActive=false;
+        message.textContent = "📉 الرقم أصغر";
 
-        return;
+        message.className = "high";
+
     }
 
-    currentPlayer=currentPlayer==="X"?"O":"X";
+    if (attempts === 0) {
 
-    statusText.textContent=`دور اللاعب ${currentPlayer}`;
+        message.textContent = `💥 خسرت! الرقم الصحيح هو ${randomNumber}`;
 
-}
+        message.className = "high";
 
-function restartGame(){
+        guessBtn.disabled = true;
 
-    board=["","","","","","","","",""];
+    }
 
-    currentPlayer="X";
+    input.value = "";
 
-    gameActive=true;
-
-    statusText.textContent="دور اللاعب X";
-
-    cells.forEach(cell=>{
-
-        cell.textContent="";
-
-        cell.classList.remove(
-            "x",
-            "o",
-            "winner",
-            "pop"
-        );
-
-    });
+    input.focus();
 
 }
 
-function resetScores(){
+function newGame() {
 
-    scores={
-        X:0,
-        O:0,
-        draw:0
-    };
+    randomNumber = Math.floor(Math.random() * 100) + 1;
 
-    saveScores();
+    attempts = 10;
 
-}
+    attemptsText.textContent = attempts;
 
-function saveScores(){
+    message.textContent = "ابدأ بالتخمين...";
 
-    localStorage.setItem(
-        "xoScores",
-        JSON.stringify(scores)
-    );
+    message.className = "";
 
-    updateScoreboard();
+    input.value = "";
 
-}
+    guessBtn.disabled = false;
 
-function updateScoreboard(){
-
-    scoreX.textContent=scores.X;
-
-    scoreO.textContent=scores.O;
-
-    scoreDraw.textContent=scores.draw;
+    input.focus();
 
 }
