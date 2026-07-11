@@ -1,87 +1,393 @@
-const cells = document.querySelectorAll(".cell");
-const statusText = document.getElementById("status");
-const restartBtn = document.getElementById("restart");
+/* =========================
+   Reset
+========================= */
 
-let currentPlayer = "X";
-let gameActive = true;
-let board = ["", "", "", "", "", "", "", "", ""];
-
-const winningConditions = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
-
-statusText.textContent = `دور اللاعب ${currentPlayer}`;
-
-cells.forEach(cell => {
-  cell.addEventListener("click", handleCellClick);
-});
-
-restartBtn.addEventListener("click", restartGame);
-
-function handleCellClick() {
-  const index = this.dataset.index;
-
-  if (board[index] !== "" || !gameActive) {
-    return;
-  }
-
-  board[index] = currentPlayer;
-  this.textContent = currentPlayer;
-
-  // جعل لون X و O واضحًا
-  this.style.color = currentPlayer === "X" ? "#2563eb" : "#dc2626";
-
-  checkWinner();
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
-function checkWinner() {
-  let roundWon = false;
+body{
 
-  for (let i = 0; i < winningConditions.length; i++) {
-    const [a, b, c] = winningConditions[i];
+    min-height:100vh;
 
-    if (
-      board[a] !== "" &&
-      board[a] === board[b] &&
-      board[b] === board[c]
-    ) {
-      roundWon = true;
-      break;
-    }
-  }
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-  if (roundWon) {
-    statusText.textContent = `🎉 اللاعب ${currentPlayer} فاز!`;
-    gameActive = false;
-    return;
-  }
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a,
+        #111827
+    );
 
-  if (!board.includes("")) {
-    statusText.textContent = "🤝 تعادل!";
-    gameActive = false;
-    return;
-  }
+    color:white;
 
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
-  statusText.textContent = `دور اللاعب ${currentPlayer}`;
 }
 
-function restartGame() {
-  board = ["", "", "", "", "", "", "", "", ""];
-  currentPlayer = "X";
-  gameActive = true;
 
-  statusText.textContent = `دور اللاعب ${currentPlayer}`;
+/* =========================
+   Container
+========================= */
 
-  cells.forEach(cell => {
-    cell.textContent = "";
-    cell.style.color = "#000";
-  });
+.container{
+
+    width:95%;
+    max-width:560px;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 10px 40px rgba(0,0,0,.35);
+
+}
+
+
+/* =========================
+   Title
+========================= */
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+    font-size:2.2rem;
+
+    letter-spacing:1px;
+
+}
+
+
+/* =========================
+   Scoreboard
+========================= */
+
+.scoreboard{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+}
+
+.score{
+
+    flex:1;
+
+    text-align:center;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,.08);
+
+    transition:.3s;
+
+}
+
+.score:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.score span{
+
+    font-size:24px;
+
+    display:block;
+
+}
+
+.score p{
+
+    margin-top:10px;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+}
+
+.x-score{
+
+    border:2px solid #3b82f6;
+
+}
+
+.o-score{
+
+    border:2px solid #ef4444;
+
+}
+
+.draw-score{
+
+    border:2px solid #10b981;
+
+}
+
+
+/* =========================
+   Status
+========================= */
+
+.status{
+
+    text-align:center;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    margin-bottom:25px;
+
+}
+/* =========================
+   Game Board
+========================= */
+
+.board{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,110px);
+
+    gap:12px;
+
+    justify-content:center;
+
+    margin:25px auto;
+
+}
+
+.cell{
+
+    width:110px;
+
+    height:110px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.12);
+
+    border:2px solid rgba(255,255,255,.15);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:48px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:
+        transform .25s,
+        background .25s,
+        box-shadow .25s;
+
+    user-select:none;
+
+}
+
+.cell:hover{
+
+    transform:scale(1.05);
+
+    background:rgba(255,255,255,.18);
+
+    box-shadow:0 0 20px rgba(255,255,255,.15);
+
+}
+
+/* مربع اللاعب X */
+
+.cell.x{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+/* مربع اللاعب O */
+
+.cell.o{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+/* المربعات الفائزة */
+
+.cell.winner{
+
+    background:#10b981 !important;
+
+    color:white;
+
+    animation:winner .8s infinite alternate;
+
+}
+
+@keyframes winner{
+
+    from{
+
+        transform:scale(1);
+
     }
+
+    to{
+
+        transform:scale(1.08);
+
+        box-shadow:0 0 18px #10b981;
+
+    }
+
+}
+
+/* حركة ظهور الرمز */
+
+.cell.pop{
+
+    animation:pop .25s ease;
+
+}
+
+@keyframes pop{
+
+    0%{
+
+        transform:scale(.4);
+
+    }
+
+    70%{
+
+        transform:scale(1.15);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:20px;
+
+}
+
+.buttons button{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#restart{
+
+    background:#3b82f6;
+
+    color:white;
+
+}
+
+#restart:hover{
+
+    background:#2563eb;
+
+}
+
+#resetScore{
+
+    background:#ef4444;
+
+    color:white;
+
+}
+
+#resetScore:hover{
+
+    background:#dc2626;
+
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media(max-width:600px){
+
+    .board{
+
+        grid-template-columns:repeat(3,90px);
+
+    }
+
+    .cell{
+
+        width:90px;
+
+        height:90px;
+
+        font-size:40px;
+
+    }
+
+    .buttons{
+
+        flex-direction:column;
+
+    }
+
+}
